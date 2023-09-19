@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { ContactList } from '../ContactList/ContactLIst';
+import { ContactList } from './ContactList/ContactLIst';
 import { nanoid } from 'nanoid';
 import { Form } from './Form/Form';
 import { Filter } from './Filter/Filter';
@@ -7,24 +7,20 @@ import { Filter } from './Filter/Filter';
 export class App extends Component {
   state = {
     contacts: [],
-    number: '',
     filter: '',
   };
-  //
-  //
-  //
-  //
-  //
+
   delete = id => {
-    this.setState(prev => ({
-      contacts: prev.contacts.filter(e => e.id !== id),
-    }));
+    this.state.filter
+      ? this.setState(prev => ({
+          filter: prev.filter.filter(e => e.id !== id),
+          contacts: prev.contacts.filter(e => e.id !== id),
+        }))
+      : this.setState(prev => ({
+          contacts: prev.contacts.filter(e => e.id !== id),
+        }));
   };
-  //
-  //
-  //
-  //
-  //
+
   findNecessary = filterQvery => {
     this.setState(prev => ({
       filter: prev.contacts.filter(e =>
@@ -33,40 +29,32 @@ export class App extends Component {
     }));
   };
 
-  //
-  //
-  //
-  //
-  //
-
-  createNewContact = e => {
-    e.preventDefault();
-    let value = e.target[0].value;
-    let number = e.target[1].value;
-    if (this.state.contacts.find(e => e.number === number)) {
-      alert(`${value} is already in contacts.`);
+  createContact = obj => {
+    if (this.state.contacts.find(e => e.name === obj.name)) {
+      alert(`${obj.name} is already in contacts.`);
       return;
     }
-    const obj = {
-      name: value,
+    const newObj = {
+      ...obj,
       id: nanoid(),
-      number: number,
     };
-
     this.setState(prev => ({
-      contacts: [...prev.contacts, obj],
+      contacts: [newObj, ...prev.contacts],
     }));
   };
+
+  forContactList = () => {
+    return this.state.filter || this.state.contacts;
+  };
+
   render() {
+    console.log(this.forContactList());
     return (
       <div className="container">
-        <Form props={this.createNewContact} />
+        <Form createContact={this.createContact} />
         <Filter findNecessary={this.findNecessary} />
 
-        <ContactList
-          props={this.state.filter || this.state.contacts}
-          delete={this.delete}
-        />
+        <ContactList contacts={this.forContactList()} delete={this.delete} />
       </div>
     );
   }

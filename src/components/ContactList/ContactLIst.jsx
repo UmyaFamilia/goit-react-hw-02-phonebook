@@ -4,7 +4,7 @@ export const ContactList = props => {
     <>
       <h4>Contacts:</h4>
       <ul>
-        {props.props.map(a => (
+        {props.contacts.map(a => (
           <li key={a.id} className={css.number}>
             {`name:  ${a.name} number:  ${a.number}`}
             <button onClick={() => props.delete(a.id)} className={css.button}>
