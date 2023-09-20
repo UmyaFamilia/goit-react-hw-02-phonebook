@@ -1,8 +1,10 @@
 import css from './Filter.module.css';
-export const Filter = ({ findNecessary }) => {
+
+export const Filter = ({ addToFilter }) => {
   const filter = ({ target: { value } }) => {
-    findNecessary(value);
+    addToFilter(value);
   };
+
   return (
     <div className={css.filterCover}>
       <label htmlFor="find">find contacts by name</label>

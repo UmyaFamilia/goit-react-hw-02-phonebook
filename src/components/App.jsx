@@ -9,18 +9,16 @@ export class App extends Component {
     contacts: [],
     filter: '',
   };
-
-  delete = id => {
-    this.state.filter
-      ? this.setState(prev => ({
-          filter: prev.filter.filter(e => e.id !== id),
-          contacts: prev.contacts.filter(e => e.id !== id),
-        }))
-      : this.setState(prev => ({
-          contacts: prev.contacts.filter(e => e.id !== id),
-        }));
+  addToFilter = word => {
+    this.setState(prev => ({
+      filter: word,
+    }));
   };
-
+  delete = id => {
+    this.setState(prev => ({
+      contacts: prev.contacts.filter(contact => contact.id !== id),
+    }));
+  };
   findNecessary = filterQvery => {
     this.setState(prev => ({
       filter: prev.contacts.filter(e =>
@@ -28,9 +26,8 @@ export class App extends Component {
       ),
     }));
   };
-
   createContact = obj => {
-    if (this.state.contacts.find(e => e.name === obj.name)) {
+    if (this.state.contacts.find(contact => contact.name === obj.name)) {
       alert(`${obj.name} is already in contacts.`);
       return;
     }
@@ -42,18 +39,23 @@ export class App extends Component {
       contacts: [newObj, ...prev.contacts],
     }));
   };
-
   forContactList = () => {
-    return this.state.filter || this.state.contacts;
+    let array = [];
+    this.state.filter
+      ? (array = this.state.contacts.filter(contact =>
+          contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+        ))
+      : (array = this.state.contacts);
+    return array;
   };
-
   render() {
-    console.log(this.forContactList());
     return (
       <div className="container">
         <Form createContact={this.createContact} />
-        <Filter findNecessary={this.findNecessary} />
-
+        <Filter
+          findNecessary={this.findNecessary}
+          addToFilter={this.addToFilter}
+        />
         <ContactList contacts={this.forContactList()} delete={this.delete} />
       </div>
     );
